@@ -34,3 +34,4 @@ build/
 
 *.pem
 notes.txt
+src/main/resources/certificate.p12
