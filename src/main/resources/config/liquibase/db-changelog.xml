@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
+
+
+    <changeSet id="create_user_table" author="jamesvrooney">
+        <createTable tableName="users">
+            <column name="id" type="varchar(100)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="username" type="varchar(100)"/>
+            <column name="password" type="varchar(100)"/>
+            <column name="enabled" type="boolean" />
+        </createTable>
+    </changeSet>
+
+    <changeSet id="create_authority_table" author="jamesvrooney">
+        <createTable tableName="authorities">
+            <column name="id" type="varchar(100)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="username" type="varchar(100)"/>
+            <column name="authority" type="varchar(100)"/>
+            <column name="user_id" type="varchar(100)">
+                <constraints nullable="false" foreignKeyName="fk_user_id" references="users(id)"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="add_users" author="jamesvrooney">
+        <sqlFile path="config/liquibase/init_data.sql" />
+    </changeSet>
+
+</databaseChangeLog>

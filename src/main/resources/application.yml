@@ -1,0 +1,15 @@
+
+# Database properties
+spring:
+  jpa:
+    properties.hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect
+    hibernate.ddl-auto: none
+    hibernate.show-sql: true
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/ssia
+    username: jamesvrooney
+    password: password
+
+  liquibase:
+    change-log: classpath:config/liquibase/db-changelog.xml
