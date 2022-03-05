@@ -13,9 +13,17 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 
 @Configuration
 public class ProjectConfig extends WebSecurityConfigurerAdapter {
+    
+    @Override
+    protected void configure(HttpSecurity httpSecurity) throws Exception {
+        httpSecurity.httpBasic();
+        httpSecurity.authorizeRequests()
+                .anyRequest()
+                .authenticated();
+    }
 
-    @Bean
-    public UserDetailsService userDetailsService() {
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         var userDetailsService = new InMemoryUserDetailsManager();
 
         var james = User.withUsername("james")
@@ -25,19 +33,7 @@ public class ProjectConfig extends WebSecurityConfigurerAdapter {
 
         userDetailsService.createUser(james);
 
-        return userDetailsService;
-    }
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return NoOpPasswordEncoder.getInstance();
-    }
-
-    @Override
-    protected void configure(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.httpBasic();
-        httpSecurity.authorizeRequests()
-                .anyRequest()
-                .authenticated();
+        auth.userDetailsService(userDetailsService)
+                .passwordEncoder(NoOpPasswordEncoder.getInstance());
     }
 }
