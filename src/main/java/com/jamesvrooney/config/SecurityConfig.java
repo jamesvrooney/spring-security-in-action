@@ -2,6 +2,7 @@ package com.jamesvrooney.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.User;
@@ -11,24 +12,24 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 
 @Configuration
-public class ProjectConfig extends WebSecurityConfigurerAdapter {
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public UserDetailsService userDetailsService() {
         var userDetailsService = new InMemoryUserDetailsManager();
 
-        var rob = User.withUsername("rob")
+        var adam = User.withUsername("adam")
                 .password("password")
-                .authorities("READ")
+                .roles("ADMIN")
                 .build();
 
-        var walt = User.withUsername("walt")
+        var mark = User.withUsername("mark")
                 .password("password")
-                .authorities("WRITE")
+                .roles("MANAGER")
                 .build();
 
-        userDetailsService.createUser(rob);
-        userDetailsService.createUser(walt);
+        userDetailsService.createUser(adam);
+        userDetailsService.createUser(mark);
 
         return userDetailsService;
     }
@@ -43,7 +44,10 @@ public class ProjectConfig extends WebSecurityConfigurerAdapter {
         http.httpBasic();
 
         http.authorizeRequests()
-                .anyRequest()
-                .hasAuthority("WRITE");
+                .mvcMatchers(HttpMethod.GET, "/a").authenticated()
+                .mvcMatchers(HttpMethod.POST, "/a").permitAll()
+                .anyRequest().denyAll();
+
+        http.csrf().disable();
     }
 }
