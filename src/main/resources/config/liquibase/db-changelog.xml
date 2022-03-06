@@ -7,25 +7,37 @@
 
     <changeSet id="create_user_table" author="jamesvrooney">
         <createTable tableName="users">
-            <column name="id" type="varchar(100)">
+            <column name="id" type="uuid">
                 <constraints nullable="false" primaryKey="true"/>
             </column>
             <column name="username" type="varchar(100)"/>
             <column name="password" type="varchar(100)"/>
+            <column name="algorithm" type="varchar(100)"/>
             <column name="enabled" type="boolean" />
         </createTable>
     </changeSet>
 
     <changeSet id="create_authority_table" author="jamesvrooney">
-        <createTable tableName="authorities">
-            <column name="id" type="varchar(100)">
+        <createTable tableName="authority">
+            <column name="id" type="uuid">
                 <constraints nullable="false" primaryKey="true"/>
             </column>
-            <column name="username" type="varchar(100)"/>
             <column name="authority" type="varchar(100)"/>
-            <column name="user_id" type="varchar(100)">
+            <column name="user_id" type="uuid">
                 <constraints nullable="false" foreignKeyName="fk_user_id" references="users(id)"/>
             </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="create_product_table" author="jamesvrooney">
+        <createTable tableName="product">
+            <column name="id" type="uuid">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="name" type="varchar(100)"/>
+            <column name="currency" type="varchar(100)"/>
+            <column name="price" type="double precision"/>
+
         </createTable>
     </changeSet>
 

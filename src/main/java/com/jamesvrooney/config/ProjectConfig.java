@@ -1,39 +1,42 @@
 package com.jamesvrooney.config;
 
-import com.jamesvrooney.security.User;
-import com.jamesvrooney.security.service.InMemoryUserDetailsService;
+import com.jamesvrooney.security.AuthenticationProviderService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.JdbcUserDetailsManager;
-
-import javax.sql.DataSource;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.scrypt.SCryptPasswordEncoder;
 
 @Configuration
-public class ProjectConfig {
+public class ProjectConfig extends WebSecurityConfigurerAdapter {
 
-    @Bean
-    public UserDetailsService userDetailsService(DataSource dataSource) {
-
-//        String usersByUsernameQuery =
-//                "select username, password, enabled " +
-//                        "from users where username = ?";
+//    @Bean
+//    public BCryptPasswordEncoder bCryptPasswordEncoder() {
+//        return new BCryptPasswordEncoder();
+//    }
 //
-//        String authsByUserQuery =
-//                "select username, authority from authorities where username = ?";
+//    @Bean
+//    public SCryptPasswordEncoder sCryptPasswordEncoder() {
+//        return new SCryptPasswordEncoder();
+//    }
 
-        final JdbcUserDetailsManager userDetailsManager = new JdbcUserDetailsManager(dataSource);
+    @Autowired
+    private AuthenticationProviderService authenticationProvider;
 
-//        userDetailsManager.setU
-
-        return userDetailsManager;
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) {
+        auth.authenticationProvider(authenticationProvider);
     }
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return NoOpPasswordEncoder.getInstance();
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http.formLogin()
+                .defaultSuccessUrl("/main", true);
+
+        http.authorizeRequests()
+                .anyRequest().authenticated();
     }
 }

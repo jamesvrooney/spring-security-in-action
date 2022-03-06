@@ -1,5 +1,8 @@
 package com.jamesvrooney.security;
 
+import com.jamesvrooney.domain.User;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -7,24 +10,31 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.List;
 
-public class DummyUser implements UserDetails {
+import static java.util.stream.Collectors.toList;
+
+@Getter
+@RequiredArgsConstructor
+public class CustomUserDetails implements UserDetails {
+    private final User user;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        GrantedAuthority read_privilege = new SimpleGrantedAuthority("READ");
-
-        List<GrantedAuthority> authorities = List.of(read_privilege);
+        List<GrantedAuthority> authorities = user.getAuthorities()
+                .stream()
+                .map(a -> new SimpleGrantedAuthority(a.getAuthority()))
+                .collect(toList());
 
         return authorities;
     }
 
     @Override
     public String getPassword() {
-        return "password";
+        return user.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return "james";
+        return user.getUsername();
     }
 
     @Override
